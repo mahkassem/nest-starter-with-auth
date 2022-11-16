@@ -1,6 +1,6 @@
 # Nestjs Starter Package
 
-Nestjs starter package that include some fundamental common use modules and configurations, you can use it as a template to save some time:
+Nestjs starter package that include some fundamental and commonly used modules and configurations, you can use it as a template to save some time:
 
 Repo: https://github.com/mahkassem/nest-starter-with-auth
 
