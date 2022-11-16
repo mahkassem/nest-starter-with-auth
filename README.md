@@ -1,3 +1,15 @@
+# Nestjs Starter Package
+
+Nestjs starter package that include some fundamental common use modules and configurations, you can use it as a template to save some time:
+
+Repo: https://github.com/mahkassem/nest-starter-with-auth
+
+## Features:
+- Auth ( register, signin, send otp, verify otp)
+- Swagger
+- Seeders
+- Storage ( Local / S3 )
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
