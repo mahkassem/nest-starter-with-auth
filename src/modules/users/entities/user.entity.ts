@@ -4,13 +4,17 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 import { Factory } from 'nestjs-seeder';
 import { Gender } from '../data/enums/gender.enum';
 import { Exclude } from 'class-transformer';
+import { AddressEntity } from 'src/modules/address/entities/address.entity';
+import { Role } from '../data/enums/role.enum';
 
-@Entity()
-export class User {
+@Entity('users')
+export class UserEntity {
+  [x: string]: any;
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -47,7 +51,7 @@ export class User {
   @Column({ nullable: true, length: 500 })
   avatar: string;
 
-  @Factory((faker) => faker.helpers.arrayElement(['male', 'female']))
+  @Factory((faker) => faker.helpers.arrayElement(Object.values(Gender)))
   @Column({ nullable: true, type: 'enum', enum: Gender })
   gender: Gender;
 
@@ -57,15 +61,23 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @Factory((faker, ctx) => faker.date.past())
+  @Column({
+    type: "set",
+    enum: Role,
+    default: [Role.USER],
+  })
+  roles: Role[]
+
   @CreateDateColumn()
   created_at: Date;
 
-  @Factory((faker, ctx) => ctx.created_at)
   @UpdateDateColumn()
   updated_at: Date;
 
-  constructor(partial: Partial<User>) {
+  @OneToMany(() => AddressEntity, (address) => address.user)
+  addresses: Promise<AddressEntity[]>;
+
+  constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
   }
 }

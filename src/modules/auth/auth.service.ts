@@ -7,11 +7,10 @@ import * as bcrypt from 'bcrypt';
 import { RegisterRequest } from './dto/requests/register.request';
 import { StorageService } from '@codebrew/nestjs-storage/dist';
 import { ConfigService } from '@nestjs/config';
-import { Otp } from './entities/otp.entity';
+import { OtpEntity } from './entities/otp.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SendOtpRequest } from './dto/requests/send-otp.request';
-import { plainToClass } from 'class-transformer';
 import { VerifyOtpRequest } from './dto/requests/verify-otp.request';
 import { randStr } from 'src/utils/helpers/string.helper';
 import { AuthUtil } from './utils/auth.util';
@@ -24,25 +23,29 @@ export class AuthService {
         @Inject(JwtService) private readonly jwtService: JwtService,
         @Inject(StorageService) private readonly storage: StorageService,
         @Inject(ConfigService) private readonly config: ConfigService,
-        @InjectRepository(Otp) private otpsRepository: Repository<Otp>,
+        @InjectRepository(OtpEntity) private otpsRepository: Repository<OtpEntity>,
         @Inject(AuthUtil) private readonly authUtil: AuthUtil,
         @Inject(SendOtpTransaction) private readonly sendOtpTransaction: SendOtpTransaction
     ) { }
 
     async validateUser(req: LoginRequest): Promise<any> {
-        try {
-            const user = await this.usersService.findOne({ email: req.username });
-            if (!user) throw new BadRequestException('Invalid credentials');
-            const isMatch = await bcrypt.compare(req.password + this.config.get('app.key'), user.password);
-            if (!isMatch) throw new BadRequestException('Invalid credentials');
-            const { password, ...result } = user;
-            return result;
-        } catch (error) {
-            throw new BadRequestException(error.message ?? 'Invalid credentials');
+        const user = await this.usersService.findOne([
+            { email: req.username },
+            { username: req.username },
+            { phone: req.username }
+        ]);
+        let isMatch = false;
+        if (user) {
+            isMatch = await bcrypt.compare(req.password + this.config.get('app.key'), user.password);
         }
+        if (user && isMatch) {
+            return user;
+        }
+        return null;
     }
 
     async login(user: any) {
+        if (!user) throw new BadRequestException('Invalid credentials');
         const payload = { username: user.username, sub: user.id };
         return {
             ...user,
@@ -85,9 +88,13 @@ export class AuthService {
         // update user ${req.type}_verified_at if not verified
         if (!user[`${req.type}_verified_at`]) {
             user[`${req.type}_verified_at`] = new Date();
-            await this.usersService.update(user.id, user);
+            await this.usersService.update(user);
         }
 
         return this.login(user);
+    }
+
+    async getUserFromPayload(payload: any) {
+        return payload;
     }
 }

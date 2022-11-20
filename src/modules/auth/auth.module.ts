@@ -8,11 +8,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { IsUniqueEmail } from '../../utils/validations/unique-email.validator';
 import { IsUniquePhone } from '../../utils/validations/unique-phone.validator';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
-import { Otp } from './entities/otp.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { OtpEntity } from './entities/otp.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthUtil } from './utils/auth.util';
 import { SendOtpTransaction } from './utils/transactions/send-otp.transaction';
+import { UsersService } from '../users/users.service';
 
 @Module({
     imports: [
@@ -23,16 +24,17 @@ import { SendOtpTransaction } from './utils/transactions/send-otp.transaction';
             imports: [ConfigModule],
             useFactory: async (config: ConfigService) => (
                 {
+                    defaultStrategy: JwtStrategy,
                     secret: config.get<string>('app.key'),
                     signOptions: { expiresIn: '180d' },
                 }
             ),
             inject: [ConfigService],
         }),
-        TypeOrmModule.forFeature([User, Otp]),
+        TypeOrmModule.forFeature([UserEntity, OtpEntity]),
     ],
     controllers: [AuthController],
-    providers: [AuthService, AuthUtil, SendOtpTransaction, JwtStrategy, IsUniqueEmail, IsUniquePhone],
+    providers: [AuthService, UsersService, AuthUtil, SendOtpTransaction, JwtStrategy, IsUniqueEmail, IsUniquePhone],
     exports: [AuthService],
 })
 export class AuthModule { }

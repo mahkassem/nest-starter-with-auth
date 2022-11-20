@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 import { Exclude, Expose } from "class-transformer";
+import { Role } from "src/modules/users/data/enums/role.enum";
 import env from "src/utils/helpers/env.helper";
 
 export class RegisterResponse {
@@ -16,6 +17,7 @@ export class RegisterResponse {
     @Expose() email_verified_at: Date;
     @Expose() phone: string;
     @Expose() phone_verified_at: Date;
+    @Expose() role: Role;
 
     public set avatar(value: string) {
         this._avatar = value;

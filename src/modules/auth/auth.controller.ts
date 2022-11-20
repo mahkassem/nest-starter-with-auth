@@ -17,7 +17,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
-import { ActionResponse } from 'src/utils/responses/action.response';
+import { ActionResponse } from 'src/utils/base/responses/action.response';
 import { AuthService } from './auth.service';
 import { RegisterRequest } from './dto/requests/register.request';
 import { SendOtpRequest } from './dto/requests/send-otp.request';
@@ -59,12 +59,13 @@ export class AuthController {
     @UseInterceptors(ClassSerializerInterceptor, FileInterceptor('avatarFile'))
     @Post('/register')
     @ApiConsumes('multipart/form-data')
-    async register(@UploadedFile(
-        new ParseFilePipeBuilder()
-            .addFileTypeValidator({ fileType: 'jpg|jpeg|png' })
-            .addMaxSizeValidator({ maxSize: 1024 * 1024 * 3 })
-            .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
-    ) avatarFile: Express.Multer.File, @Body() req: RegisterRequest): Promise<ActionResponse<RegisterResponse>> {
+    async register(@Body() req: RegisterRequest,
+        @UploadedFile(
+            new ParseFilePipeBuilder()
+                .addFileTypeValidator({ fileType: 'jpg|jpeg|png' })
+                .addMaxSizeValidator({ maxSize: 1024 * 1024 * 3 })
+                .build({ fileIsRequired: false, errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+        ) avatarFile: Express.Multer.File): Promise<ActionResponse<RegisterResponse>> {
         req.avatarFile = avatarFile;
         const user = await this.authService.register(req);
         const result = plainToClass(RegisterResponse, user, { excludeExtraneousValues: true });

@@ -6,14 +6,14 @@ https://docs.nestjs.com/modules
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { IsUniquePhone } from 'src/utils/validations/unique-phone.validator';
 import { IsUniqueEmail } from 'src/utils/validations/unique-email.validator';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([UserEntity])],
   controllers: [UsersController],
   providers: [UsersService, IsUniqueEmail, IsUniquePhone],
   exports: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule { }

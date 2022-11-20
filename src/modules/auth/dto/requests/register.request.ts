@@ -16,7 +16,7 @@ export class RegisterRequest {
     @IsNotEmpty() @IsPhoneNumber('SA') @UniquePhone()
     phone: string;
 
-    @ApiProperty({ type: 'file' })
+    @ApiProperty({ type: 'file', required: false })
     @IsOptional()
     avatarFile: Express.Multer.File;
 }

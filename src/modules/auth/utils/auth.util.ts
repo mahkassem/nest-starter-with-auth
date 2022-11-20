@@ -3,7 +3,7 @@ import * as sharp from 'sharp';
 import { ConfigService } from "@nestjs/config";
 import { StorageService } from '@codebrew/nestjs-storage/dist';
 import { Inject, Injectable } from "@nestjs/common";
-import { User } from "src/modules/users/entities/user.entity";
+import { UserEntity } from "src/modules/users/entities/user.entity";
 
 @Injectable()
 export class AuthUtil {
@@ -12,12 +12,13 @@ export class AuthUtil {
         @Inject(ConfigService) private readonly config: ConfigService,
     ) { }
 
-    async uploadAvatar(req: RegisterRequest): Promise<User> {
+    async uploadAvatar(req: RegisterRequest): Promise<UserEntity> {
         const baseUrl = this.config.get('storage.baseUrl');
-        const ext = req.avatarFile.originalname.split('.').pop();
-        const randName = req.avatarFile.originalname.split('.').shift() + '-' + new Date().getTime();
-        let fileLocation = `${baseUrl}/avatars/${randName}.${ext}`;
+        let fileLocation = `${baseUrl}/avatars/default.png`;
         if (req.avatarFile) {
+            const ext = req.avatarFile.originalname.split('.').pop();
+            const randName = req.avatarFile.originalname.split('.').shift() + '-' + new Date().getTime();
+            fileLocation = `${baseUrl}/avatars/${randName}.${ext}`;
             // use sharp to resize image
             const resizedImage = await sharp(req.avatarFile.buffer)
                 .resize(300, 300, {
@@ -26,10 +27,8 @@ export class AuthUtil {
                 })
                 .toBuffer();
             await this.storage.getDisk().put(fileLocation, resizedImage);
-        } else {
-            fileLocation = `${baseUrl}/avatars/default.png`;
         }
         delete req.avatarFile;
-        return new User({ ...req, avatar: fileLocation });
+        return new UserEntity({ ...req, avatar: fileLocation });
     }
 }

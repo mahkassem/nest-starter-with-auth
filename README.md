@@ -2,20 +2,24 @@
 
 Nestjs starter package that include some fundamental and commonly used modules and configurations, you can use it as a template to save some time:
 
-Repo: https://github.com/mahkassem/nest-starter-with-auth
+Repo: <https://github.com/mahkassem/nest-starter-with-auth>
 
-## Features:
-- Auth ( register, signin, send otp, verify otp)
+## Features
+
+- Authorization ( register, signin, send otp, verify otp)
+- Authorization (role-based)
+- Fileupload
+- Sharp image processing
 - Swagger
 - Seeders
 - Storage ( Local / S3 )
+- Exception Filter
+- Support for transactions
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
@@ -41,7 +45,7 @@ Repo: https://github.com/mahkassem/nest-starter-with-auth
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Running the app
