@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserEntity } from '../users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RegisterRequest } from './dto/requests/register.request';
 
 describe('AuthController', () => {
     let authController: AuthController;
-    let user: UserEntity;
+    let user: User;
 
     beforeEach(async () => {
         const auth: TestingModule = await Test.createTestingModule({
@@ -25,7 +25,7 @@ describe('AuthController', () => {
             req.avatarFile = null;
             req.phone = '+1234567890';
 
-            const result = await authController.register(req, null) as any;
+            const result = await authController.register(null, req) as any;
 
             expect(result.data.username).toBe(user.phone);
             expect(authController).toBeDefined();

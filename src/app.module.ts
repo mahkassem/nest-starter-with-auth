@@ -1,4 +1,3 @@
-import { AddressModule } from './modules/address/address.module';
 import config from './config';
 import TypeormService from './config/typeorm.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -14,13 +13,9 @@ import { DriverType } from '@codebrew/nestjs-storage';
 import { StorageModule } from '@codebrew/nestjs-storage';
 import { FileModule } from './modules/file/file.module';
 import { RateLimiterGuard, RateLimiterModule } from 'nestjs-rate-limiter';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { GlobalExceptionFilter } from './utils/setup/exceptions/global-exception-filter';
-import { RolesGuard } from './modules/users/guards/roles.guard';
 
 @Module({
   imports: [
-    AddressModule,
     FileModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -63,14 +58,10 @@ import { RolesGuard } from './modules/users/guards/roles.guard';
   ],
   controllers: [AppController],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: RateLimiterGuard,
-    },
     AppService,
     {
-      provide: APP_FILTER,
-      useClass: GlobalExceptionFilter,
+      provide: 'APP_GUARD',
+      useClass: RateLimiterGuard,
     }
   ],
 })

@@ -6,12 +6,12 @@ import {
     ValidatorConstraintInterface,
     ValidationArguments,
 } from 'class-validator';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @ValidatorConstraint({ async: true })
 export class IsUniqueEmail implements ValidatorConstraintInterface {
-    constructor(@InjectRepository(UserEntity) private readonly usersRepository: Repository<UserEntity>) { }
+    constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) { }
     async validate(email: any, args: ValidationArguments) {
         const [exceptField = null] = args.constraints;
 

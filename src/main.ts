@@ -8,11 +8,12 @@ import helmet from 'helmet';
 import { useContainer } from 'class-validator';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'debug', 'log', 'verbose'],
+  });
   const configService = app.get<ConfigService>(ConfigService);
-
-  app.enableCors();
-  app.use(helmet()); // helmet
+  // helmet
+  app.use(helmet());
   app.use(compression());
   app.setGlobalPrefix('v1', {
     exclude: [{ path: 'swagger', method: RequestMethod.GET }],

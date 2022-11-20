@@ -1,19 +1,26 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Request } from 'express';
-import { BaseService } from 'src/utils/base/services/base.service';
-import { Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+/*
+https://docs.nestjs.com/providers#services
+*/
 
-@Injectable({ scope: Scope.REQUEST })
-export class UsersService extends BaseService<UserEntity> {
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+
+@Injectable()
+export class UsersService {
     constructor(
-        @InjectRepository(UserEntity)
-        private usersRepository: Repository<UserEntity>,
-        @Inject(REQUEST) request: Request,
-    ) {
-        super(usersRepository, request);
+        @InjectRepository(User)
+        private usersRepository: Repository<User>,
+    ) { }
+
+    async findAll(): Promise<User[]> {
+        return await this.usersRepository.find();
+    }
+
+    async findOne(column: string | Partial<User>): Promise<User> {
+        const query = typeof column === 'string' ? { id: column } : column;
+        return await this.usersRepository.findOneBy(query);
     }
 
     async isEmailUnique(email: string): Promise<boolean> {
@@ -22,5 +29,13 @@ export class UsersService extends BaseService<UserEntity> {
 
     async isPhoneUnique(phone: string): Promise<boolean> {
         return await this.usersRepository.findOneBy({ phone }) === undefined;
+    }
+
+    async create(user: User): Promise<User> {
+        return await this.usersRepository.save(user);
+    }
+
+    async update(id: string, user: User): Promise<User> {
+        return await this.usersRepository.save({ id, ...user });
     }
 }

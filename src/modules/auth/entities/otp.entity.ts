@@ -5,8 +5,8 @@ import {
     CreateDateColumn,
 } from 'typeorm';
 
-@Entity('otps')
-export class OtpEntity {
+@Entity()
+export class Otp {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

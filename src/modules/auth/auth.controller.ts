@@ -14,10 +14,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {
     ApiBearerAuth,
     ApiConsumes,
+    ApiParam,
+    ApiProperty,
     ApiTags,
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
-import { ActionResponse } from 'src/utils/base/responses/action.response';
+import { ActionResponse } from 'src/utils/responses/action.response';
 import { AuthService } from './auth.service';
 import { RegisterRequest } from './dto/requests/register.request';
 import { SendOtpRequest } from './dto/requests/send-otp.request';
